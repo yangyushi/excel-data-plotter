@@ -5,6 +5,13 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QComboBox, Q
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
+import sys
+import pandas as pd
+import matplotlib.pyplot as plt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QComboBox, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QRadioButton, QWidget
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+
 class PlotWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -21,6 +28,10 @@ class PlotWindow(QMainWindow):
         self.plot_button.clicked.connect(self.plot_data)
         self.plot_button.setEnabled(False)
         
+        self.line_plot_button = QRadioButton("Line Plot", self)
+        self.line_plot_button.setChecked(True)
+        self.scatter_plot_button = QRadioButton("Scatter Plot", self)
+        
         self.x_combo = QComboBox(self)
         self.x_combo.setEnabled(False)
         self.y_combo = QComboBox(self)
@@ -35,6 +46,8 @@ class PlotWindow(QMainWindow):
         hbox.addWidget(QLabel('Y-axis:'))
         hbox.addWidget(self.y_combo)
         hbox.addStretch(1)
+        hbox.addWidget(self.line_plot_button)
+        hbox.addWidget(self.scatter_plot_button)
         hbox.addWidget(self.load_button)
         hbox.addWidget(self.plot_button)
         
@@ -46,7 +59,6 @@ class PlotWindow(QMainWindow):
         central_widget.setLayout(vbox)
         self.setCentralWidget(central_widget)
         
-
     def load_data(self):
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
@@ -66,9 +78,13 @@ class PlotWindow(QMainWindow):
         y = self.y_combo.currentText()
         self.figure.clear()
         ax = self.figure.add_subplot(111)
-        ax.scatter(self.df[x], self.df[y])
+        if self.line_plot_button.isChecked():
+            ax.plot(self.df[x], self.df[y])
+        else:
+            ax.scatter(self.df[x], self.df[y])
         ax.set_xlabel(x)
         ax.set_ylabel(y)
+        ax.tight_layout()
         self.canvas.draw()
 
 if __name__ == '__main__':
@@ -76,3 +92,4 @@ if __name__ == '__main__':
     window = PlotWindow()
     window.show()
     sys.exit(app.exec_())
+

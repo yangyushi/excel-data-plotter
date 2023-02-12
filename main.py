@@ -1,7 +1,8 @@
 import sys
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QComboBox, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QRadioButton, QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QComboBox, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QRadioButton, QLineEdit, QWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -31,6 +32,9 @@ class PlotWindow(QMainWindow):
         self.y_combo = QComboBox(self)
         self.y_combo.setEnabled(False)
         
+        self.y_transform_edit = QLineEdit(self)
+        self.y_transform_edit.setEnabled(False)
+        
         self.figure = Figure(figsize=(5, 4), dpi=100)
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
@@ -40,6 +44,8 @@ class PlotWindow(QMainWindow):
         hbox.addWidget(self.x_combo)
         hbox.addWidget(QLabel('Y-axis:'))
         hbox.addWidget(self.y_combo)
+        hbox.addWidget(QLabel('Y-Transformation:'))
+        hbox.addWidget(self.y_transform_edit)
         hbox.addStretch(1)
         hbox.addWidget(self.line_plot_button)
         hbox.addWidget(self.scatter_plot_button)
@@ -67,17 +73,27 @@ class PlotWindow(QMainWindow):
             self.y_combo.addItems(list(self.df.columns))
             self.x_combo.setEnabled(True)
             self.y_combo.setEnabled(True)
+            self.y_transform_edit.setEnabled(True)
             self.plot_button.setEnabled(True)
     
     def plot_data(self):
         x = self.x_combo.currentText()
         y = self.y_combo.currentText()
+        y_transform = self.y_transform_edit.text()
+        if y_transform:
+            try:
+                y_transform = eval(f"lambda y: {y_transform}")
+                y_data = y_transform(self.df[y])
+            except:
+                y_data = self.df[y]
+        else:
+            y_data = self.df[y]
         self.figure.clear()
         ax = self.figure.add_subplot(111)
         if self.line_plot_button.isChecked():
-            ax.plot(self.df[x], self.df[y])
+            ax.plot(self.df[x], y_data)
         else:
-            ax.scatter(self.df[x], self.df[y])
+            ax.scatter(self.df[x], y_data)
         ax.set_xlabel(x)
         ax.set_ylabel(y)
         self.figure.tight_layout()

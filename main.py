@@ -80,7 +80,7 @@ class PlotWindow(QMainWindow):
             ax.scatter(self.df[x], self.df[y])
         ax.set_xlabel(x)
         ax.set_ylabel(y)
-        ax.tight_layout()
+        self.figure.tight_layout()
         self.canvas.draw()
 
 if __name__ == '__main__':

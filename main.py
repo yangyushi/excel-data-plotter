@@ -46,6 +46,7 @@ class PlotWindow(QMainWindow):
         central_widget.setLayout(vbox)
         self.setCentralWidget(central_widget)
         
+
     def load_data(self):
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
@@ -58,5 +59,20 @@ class PlotWindow(QMainWindow):
             self.y_combo.addItems(list(self.df.columns))
             self.x_combo.setEnabled(True)
             self.y_combo.setEnabled(True)
-            self
+            self.plot_button.setEnabled(True)
+    
+    def plot_data(self):
+        x = self.x_combo.currentText()
+        y = self.y_combo.currentText()
+        self.figure.clear()
+        ax = self.figure.add_subplot(111)
+        ax.scatter(self.df[x], self.df[y])
+        ax.set_xlabel(x)
+        ax.set_ylabel(y)
+        self.canvas.draw()
 
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = PlotWindow()
+    window.show()
+    sys.exit(app.exec_())

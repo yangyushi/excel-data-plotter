@@ -1,15 +1,9 @@
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QComboBox, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QWidget
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-
-import sys
-import pandas as pd
-import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QComboBox, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QRadioButton, QWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
 class PlotWindow(QMainWindow):
@@ -39,6 +33,7 @@ class PlotWindow(QMainWindow):
         
         self.figure = Figure(figsize=(5, 4), dpi=100)
         self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar(self.canvas, self)
         
         hbox = QHBoxLayout()
         hbox.addWidget(QLabel('X-axis:'))
@@ -54,6 +49,7 @@ class PlotWindow(QMainWindow):
         vbox = QVBoxLayout()
         vbox.addLayout(hbox)
         vbox.addWidget(self.canvas)
+        vbox.addWidget(self.toolbar)
         
         central_widget = QWidget(self)
         central_widget.setLayout(vbox)

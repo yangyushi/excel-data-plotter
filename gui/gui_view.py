@@ -30,6 +30,7 @@ class View(QMainWindow):
 
         self.y_transform_edit = QLineEdit(self)
         self.y_transform_edit.setEnabled(False)
+        self.y_transform_edit.setFixedWidth(200)
 
         self.figure = Figure(figsize=(5, 4), dpi=100)
         self.canvas = FigureCanvas(self.figure)
@@ -38,8 +39,10 @@ class View(QMainWindow):
         hbox = QHBoxLayout()
         hbox.addWidget(QLabel('X-axis:'))
         hbox.addWidget(self.x_combo)
+        hbox.addStretch(1)
         hbox.addWidget(QLabel('Y-axis:'))
         hbox.addWidget(self.y_combo)
+        hbox.addStretch(1)
         hbox.addWidget(QLabel('Y-Transformation:'))
         hbox.addWidget(self.y_transform_edit)
         hbox.addStretch(1)
@@ -56,5 +59,4 @@ class View(QMainWindow):
         central_widget = QWidget(self)
         central_widget.setLayout(vbox)
         self.setCentralWidget(central_widget)
-
 

@@ -1,3 +1,4 @@
+import numpy as np  # for possible lambda transformation on Y
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QFileDialog
 
@@ -14,7 +15,9 @@ class Controller(QObject):
     def load_data(self):
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
-        file_name, _ = QFileDialog.getOpenFileName(self.view, "Load Data", "", "Excel Files (*.xlsx);;All Files (*)", options=options)
+        file_name, _ = QFileDialog.getOpenFileName(
+            self.view, "Load Data", "", "Excel Files (*.xlsx);;All Files (*)", options=options
+        )
         if file_name:
             self.model.load_data(file_name)
 

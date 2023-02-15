@@ -9,6 +9,7 @@ from matplotlib.figure import Figure
 class View(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.axes = []
         self.initUI()
 
     def initUI(self):
@@ -23,9 +24,17 @@ class View(QMainWindow):
         self.line_plot_button.setChecked(True)
         self.scatter_plot_button = QRadioButton("Scatter Plot", self)
 
+        self.add_column_button = QPushButton('Add Column', self)
+        self.add_column_button.setEnabled(False)
+
+        self.columns_layout = QVBoxLayout()
+
         self.x_combo = QComboBox(self)
+        self.x_combo.setFixedWidth(200)
         self.x_combo.setEnabled(False)
+
         self.y_combo = QComboBox(self)
+        self.y_combo.setFixedWidth(200)
         self.y_combo.setEnabled(False)
 
         self.y_transform_edit = QLineEdit(self)
@@ -37,12 +46,11 @@ class View(QMainWindow):
         self.toolbar = NavigationToolbar(self.canvas, self)
 
         hbox = QHBoxLayout()
+        hbox.addWidget(self.add_column_button)
         hbox.addWidget(QLabel('X-axis:'))
         hbox.addWidget(self.x_combo)
-        hbox.addStretch(1)
         hbox.addWidget(QLabel('Y-axis:'))
         hbox.addWidget(self.y_combo)
-        hbox.addStretch(1)
         hbox.addWidget(QLabel('Y-Transformation:'))
         hbox.addWidget(self.y_transform_edit)
         hbox.addStretch(1)
@@ -52,6 +60,7 @@ class View(QMainWindow):
         hbox.addWidget(self.plot_button)
 
         vbox = QVBoxLayout()
+        vbox.addLayout(self.columns_layout)
         vbox.addLayout(hbox)
         vbox.addWidget(self.canvas)
         vbox.addWidget(self.toolbar)
@@ -59,4 +68,3 @@ class View(QMainWindow):
         central_widget = QWidget(self)
         central_widget.setLayout(vbox)
         self.setCentralWidget(central_widget)
-
